@@ -1,0 +1,6 @@
+#ifndef CAMERA_LOCATION_ENGINE_DRIVE_CONSTANTS_H
+#define CAMERA_LOCATION_ENGINE_DRIVE_CONSTANTS_H
+
+constexpr double pixel_projection_tolerance = 5.0;
+
+#endif //CAMERA_LOCATION_ENGINE_DRIVE_CONSTANTS_H
