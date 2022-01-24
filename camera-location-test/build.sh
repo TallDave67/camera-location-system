@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 DIR="/build"
 if [ -d "$DIR" ]; then
   ### Take action if $DIR exists ###
