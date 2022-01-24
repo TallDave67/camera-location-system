@@ -20,11 +20,16 @@ namespace Vision {
       void show_selected_board();
       void mask_outside_board();
       bool find_board_squares();
+      void create_object_points();
       void report_results(const std::vector<std::stringstream> & header, const std::vector<std::stringstream> & body, enum Vision::Result result);
 
       void clear_board_corners();
       bool is_max_board_corners();
       void add_board_corner(int x, int y);
+      void report_board_corners();
+
+      std::vector<cv::Point2f> & get_square_corners();
+      std::vector<cv::Point3f> & get_object_points();
 
     private:
       //our window name

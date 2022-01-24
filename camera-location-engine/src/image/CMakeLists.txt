@@ -9,7 +9,6 @@ include_directories(
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-
 add_library(camera_location_engine-src-image
   image.cpp
 )

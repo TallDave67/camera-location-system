@@ -2,6 +2,7 @@
 
 namespace Vision {
   Transformer::Transformer()
+    : rot_mat {3, 3, cv::DataType<double>::type}
   {
   }
 

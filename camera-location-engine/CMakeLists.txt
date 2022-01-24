@@ -7,8 +7,8 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 add_subdirectory(src)
 include_directories(
   src
+  src/agent
   src/camera
-  src/driver
   src/image
   src/input
   src/transformer

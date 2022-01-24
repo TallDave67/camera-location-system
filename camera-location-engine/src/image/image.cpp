@@ -115,6 +115,18 @@ namespace Vision {
     return pattern_found;
   }
   
+  void Image::create_object_points()
+  {
+    // 3D coordinates of chessboard points
+    std::cout << "world origin (0,0) is chosen to be at image's first square corner (" << square_corners[0].x << "," << square_corners[0].y << ")" << std::endl;
+    std::cout << "coordinate system is right-handed (x right, y down, z forward)" << std::endl;
+    object_points.clear();
+    for(int y=0; y < num_square_corners_vertical; ++y)
+        for(int x=0; x < num_square_corners_horizontal; ++x)
+            object_points.push_back(cv::Point3f(x * square_size, y * square_size, 0));
+  
+  }
+
   void Image::report_results(const std::vector<std::stringstream> & header, const std::vector<std::stringstream> & body, enum Vision::Result result)
   {
     const cv::Scalar color {result == Vision::Result::ERROR ? 100. : 0., 0., result == Vision::Result::SUCCESS ? 100. : 0.}; //BGR
@@ -169,5 +181,24 @@ namespace Vision {
       board_corners[0][next_board_corner].y = y;
       next_board_corner++;
     }    
+  }
+
+  void Image::report_board_corners()
+  {
+    std::cout << "board_corners" << std::endl;
+    for(int i = 0; i < num_board_corners; i++)
+    {
+        std::cout << "  " << board_corners[0][i] << std::endl;
+    }
+  }
+
+  std::vector<cv::Point2f> & Image::get_square_corners()
+  {
+    return square_corners;
+  }
+
+  std::vector<cv::Point3f> & Image::get_object_points()
+  {
+    return object_points;
   }
 }
