@@ -26,7 +26,7 @@ namespace Vision {
 
     if(image.init(win_name, image_path) == 0)
     {
-      //camera.init();
+      camera.init();
       return 0;
     }
     else
@@ -83,8 +83,8 @@ namespace Vision {
             if(verify_projected_points())
             {
                 std::cout << "rotation and translation vectors verified" << std::endl;
-                transformer.compute_rotation_matrix();
-                //camera.compute_position();
+                transformer.compute_rotation_matrix(rot_vec);
+                camera.compute_position(transformer.get_rotation_matrix(), trans_vec);
                 report_camera_position();
             }
         }
@@ -111,14 +111,33 @@ namespace Vision {
 
   void Agent::compute_transformation_vectors()
   {
-    //cv::solvePnP(image.get_object_points(), image.get_square_corners(), camera.get_camera_intrinsics(), camera.get_distortion_coefficients(), rot_vec, trans_vec);
+    cv::solvePnP(image.get_object_points(), image.get_square_corners(), camera.get_camera_intrinsics(), camera.get_distortion_coefficients(), rot_vec, trans_vec);
     std::cout << "rot_vec: " << rot_vec << std::endl;
     std::cout << "trans_vec: " << trans_vec << std::endl;
   }
 
   bool Agent::verify_projected_points()
   {
-    return true;
+    bool verified {true};
+    cv::projectPoints(image.get_object_points(), rot_vec, trans_vec, camera.get_camera_intrinsics(), camera.get_distortion_coefficients(), projected_points);
+    std::vector<cv::Point2f> & square_corners_ = image.get_square_corners();
+    for(unsigned int i = 0; i < projected_points.size(); ++i)
+    {
+        //check that we get back our original image points (the projections)
+        //when applying the RT transformations to our object points
+        //within an acceptable pixel tolerance
+        double x_diff = abs(square_corners_[i].x - projected_points[i].x);
+        double y_diff = abs(square_corners_[i].y - projected_points[i].y);
+        if(x_diff > pixel_projection_tolerance || y_diff > pixel_projection_tolerance)
+        {
+            verified = false;
+            std::cerr << "could not recuperate original square corner points from object points using transformation vectors" << std::endl;
+            std::cout << "ERROR: could not recuperate original square corner points from object points using transformation vectors" << std::endl;
+            break;
+        }
+    }
+
+    return verified;
   }
 
   void Agent::report_camera_position()

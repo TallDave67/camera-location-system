@@ -10,7 +10,9 @@ namespace Vision {
       Transformer();
       ~Transformer();
 
-      void compute_rotation_matrix();
+      void compute_rotation_matrix(cv::Mat & rot_vec);
+
+      cv::Mat & get_rotation_matrix();
 
     private:
       cv::Mat rot_mat;

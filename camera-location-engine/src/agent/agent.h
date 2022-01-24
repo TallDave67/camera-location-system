@@ -35,7 +35,9 @@ namespace Vision {
       Vision::Transformer transformer;
       //
       cv::Mat rot_vec;
-      cv::Mat trans_vec;    
+      cv::Mat trans_vec;
+      //
+      std::vector<cv::Point2f> projected_points;     
   };
 }
 
