@@ -5,12 +5,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 include_directories(
-  test
-  test/agent
-  test/camera
-  test/image
-  test/input
-  test/transformer
+  ../camera-location-engine/src
+  ../camera-location-engine/src/agent
+  ../camera-location-engine/src/camera
+  ../camera-location-engine/src/image
+  ../camera-location-engine/src/input
+  ../camera-location-engine/src/transformer
+)
+
+link_directories(
+  ../camera-location-engine/build/src
 )
 
 find_package( OpenCV REQUIRED )
@@ -28,6 +32,17 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 # ***** end of Fetch googletest
 
-add_executable(camera_location_test main.cpp)
+add_executable(camera_location_test 
+  main.cpp 
+  test/agent/agent_test.cpp
+  test/camera/camera_test.cpp
+  test/image/image_test.cpp
+  test/input/input_test.cpp
+  test/transformer/transformer_test.cpp
+)
 
-target_link_libraries(camera_location_test ${OpenCV_LIBS} gtest_main)
+target_link_libraries(camera_location_test 
+  camera_location_engine-src
+  ${OpenCV_LIBS}
+  gtest_main
+)
