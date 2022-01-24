@@ -11,13 +11,13 @@ namespace Vision {
   {
   }
   
-  int Image::init(const std::string & win_name_, const std::string & image_path)
+  int Image::init(const std::string & win_name_, const std::string & image_path, std::string & error)
   {
     win_name = win_name_;
     image = cv::imread( image_path, 1 );
     if ( !image.data )
     {
-        std::cout << "No image data" << std::endl;
+        error = "No image data";
         return -1;
     }
 
@@ -85,7 +85,7 @@ namespace Vision {
     cv::imshow(win_name, image_shown);
   }
   
-  bool Image::find_board_squares()
+  bool Image::find_board_squares(std::string & error)
   {
     cv::Size pattern_size(num_square_corners_horizontal, num_square_corners_vertical); //interior number of board_corners
     cv::Mat gray;
@@ -108,8 +108,7 @@ namespace Vision {
     }
     else
     {
-        std::cerr << "no chessboard squares found, cannot determine camera position" << std::endl;
-        std::cout << "ERROR: no chessboard squares found, cannot determine camera position" << std::endl;
+        error = "no chessboard squares found, cannot determine camera position";
     }
 
     return pattern_found;
@@ -127,9 +126,9 @@ namespace Vision {
   
   }
 
-  void Image::report_results(const std::vector<std::stringstream> & header, const std::vector<std::stringstream> & body, enum Vision::Result result)
+  void Image::report_results_to_ui(const std::vector<std::stringstream> & header, const std::vector<std::stringstream> & body, enum Vision::Result result)
   {
-    const cv::Scalar color {result == Vision::Result::ERROR ? 100. : 0., 0., result == Vision::Result::SUCCESS ? 100. : 0.}; //BGR
+    const cv::Scalar color {result == Vision::Result::SUCCESS ? 255. : 0., 0., result == Vision::Result::ERROR ? 255. : 0.}; //BGR
     int row = 10;
     int row_inc = 30;
     //
@@ -140,8 +139,8 @@ namespace Vision {
         image_shown,
         t.str(), //text
         cv::Point(20, row), //top-left position
-        cv::FONT_HERSHEY_COMPLEX,
-        1.0,
+        cv::FONT_HERSHEY_DUPLEX,
+        1.75,
         color, //font color
         2);
     }
@@ -153,8 +152,8 @@ namespace Vision {
         image_shown,
         t.str(), //text
         cv::Point(20, row), //top-left position
-        cv::FONT_HERSHEY_COMPLEX_SMALL,
-        1.0,
+        cv::FONT_HERSHEY_PLAIN,
+        1.5,
         color, //font color
         2);
     }

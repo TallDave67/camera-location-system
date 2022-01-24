@@ -7,4 +7,7 @@ constexpr int KEY_EXIT = 27; //Escape Key
 
 constexpr double pixel_projection_tolerance = 5.0;
 
+#include <string>
+const std::string error_label {"ERROR"};
+
 #endif //CAMERA_LOCATION_ENGINE_AGENT_CONSTANTS_H

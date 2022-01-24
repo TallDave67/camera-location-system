@@ -27,7 +27,10 @@ namespace Vision {
 
       void compute_transformation_vectors();
       bool verify_projected_points();
-      void report_camera_position();
+      void report_camera_position_to_ui();
+
+      void report_error(std::string & error);
+      void report_error_to_ui(std::string & error);
 
     private:
       Vision::Image image;

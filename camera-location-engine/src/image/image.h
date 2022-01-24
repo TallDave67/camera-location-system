@@ -13,15 +13,15 @@ namespace Vision {
       Image();
       ~Image();
 
-      int init(const std::string & win_name_, const std::string & image_path);
+      int init(const std::string & win_name_, const std::string & image_path, std::string & error);
 
       void reset_image();
       void show_image();
       void show_selected_board();
       void mask_outside_board();
-      bool find_board_squares();
+      bool find_board_squares(std::string & error);
       void create_object_points();
-      void report_results(const std::vector<std::stringstream> & header, const std::vector<std::stringstream> & body, enum Vision::Result result);
+      void report_results_to_ui(const std::vector<std::stringstream> & header, const std::vector<std::stringstream> & body, enum Vision::Result result);
 
       void clear_board_corners();
       bool is_max_board_corners();

@@ -1,6 +1,7 @@
 #include "agent.h"
 #include "agent_constants.h"
 #include "image_constants.h"
+#include "input_constants.h"
 
 namespace Vision {
   Agent::Agent() 
@@ -24,13 +25,16 @@ namespace Vision {
     add_key_event_handler(KEY_CLEAR, std::bind(&Agent::clear, this));
     add_key_event_handler(KEY_EXIT, std::bind(&Agent::exit, this));
 
-    if(image.init(win_name, image_path) == 0)
+    std::string error;
+    if(image.init(win_name, image_path, error) == 0)
     {
       camera.init();
       return 0;
     }
     else
     {
+      std::cerr << error << std::endl;
+      std::cout << error_label << ": " << error << std::endl;
       return -1;
     }
   }
@@ -69,13 +73,14 @@ namespace Vision {
     
   int Agent::determine_camera_location()
   {
+    std::string error;
     if(image.is_max_board_corners())
     {
         std::cout << "***** Determine camera location using our 4 board_corners as a jumping off point:" << std::endl;
         image.report_board_corners();
 
         image.mask_outside_board();
-        if(image.find_board_squares())
+        if(image.find_board_squares(error))
         {
             std::cout << "found square corners" << std::endl;
             image.create_object_points();
@@ -85,8 +90,12 @@ namespace Vision {
                 std::cout << "rotation and translation vectors verified" << std::endl;
                 transformer.compute_rotation_matrix(rot_vec);
                 camera.compute_position(transformer.get_rotation_matrix(), trans_vec);
-                report_camera_position();
+                report_camera_position_to_ui();
             }
+        }
+        else
+        {
+          report_error(error);
         }
     }
 
@@ -131,8 +140,8 @@ namespace Vision {
         if(x_diff > pixel_projection_tolerance || y_diff > pixel_projection_tolerance)
         {
             verified = false;
-            std::cerr << "could not recuperate original square corner points from object points using transformation vectors" << std::endl;
-            std::cout << "ERROR: could not recuperate original square corner points from object points using transformation vectors" << std::endl;
+            std::string error = "could not get original square corner points from object points using transformation vectors";
+            report_error(error);
             break;
         }
     }
@@ -140,8 +149,35 @@ namespace Vision {
     return verified;
   }
 
-  void Agent::report_camera_position()
+  void Agent::report_error(std::string & error)
   {
+    std::cerr << error << std::endl;
+    std::cout << error_label << ": " << error << std::endl;
+    report_error_to_ui(error);
+  }
 
+  void Agent::report_camera_position_to_ui()
+  {
+    std::vector<std::stringstream> header {1};
+    header[0] << "Camera Position";
+    //
+    cv::Mat camera_world_ = camera.get_camera_world();
+    std::vector<std::stringstream> body {3};
+    body[0] << "x = " << camera_world_.at<double>(0, 0) << "mm";
+    body[1] << "y = " << camera_world_.at<double>(0, 1) << "mm";
+    body[2] << "z = " << camera_world_.at<double>(0, 2) << "mm";
+    //
+    image.report_results_to_ui(header, body, Vision::Result::SUCCESS);
+  }
+
+  void Agent::report_error_to_ui(std::string & error)
+  {
+    std::vector<std::stringstream> header {1};
+    header[0] << error_label;
+    //
+    std::vector<std::stringstream> body {1};
+    body[0] << error;
+    //
+    image.report_results_to_ui(header, body, Vision::Result::ERROR);
   }
 }
