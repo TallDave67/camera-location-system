@@ -20,9 +20,20 @@ There are 2 projects in this system.
 
 You can build & run both projects with the single script [pipeline.sh](pipeline.sh).
 
+### camera-location-engine
+
 You can also build & run just the camera-location-engine project with the 2 scripts [engine build.sh](camera-location-engine/build.sh) and [engine run.sh](camera-location-engine/run.sh).
 
-You can also build & run just the camera-location-test project with the 2 scripts [test build.sh](camera-location-test/build.sh) and [test run.sh](camera-location-test/run.sh).  Note that the test build depends upon the engine build having been completed already.
+### camera-location-test
+
+You can also build & run just the camera-location-test project with the 2 scripts [test build.sh](camera-location-test/build.sh) and [test run.sh](camera-location-test/run.sh).
+
+Note that the test build depends upon the camera-location-engine build having been completed already.  Also, you will see that the build.sh script does not use cmake to pull in the engine library files.  Instead, the shell script performs these two unorthodox steps that may cause problems with your build:
+
+* copies the necessary engine library files into the cmake created build/lib folder
+* edits the cmake created build/CMakeFiles/camera_location_test.dir/link.txt file and appends the names of these engine libraries
+
+So as long as your cmake version creates the same build directory structure as cmake 3.18.4 there should not be a problem.
 
 ## Using the Interactive UI
 
