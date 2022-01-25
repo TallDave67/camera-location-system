@@ -18,8 +18,11 @@ There are 2 projects in this system.
 
 ## Build & Run
 
-You can build & run both projects with the single script pipeline.sh.
+You can build & run both projects with the single script [pipeline.sh](pipeline.sh).
 
+You can also build & run just the camera-location-engine project with the 2 scripts [engine build.sh](camera-location-engine/build.sh) and [engine run.sh](camera-location-engine/run.sh).
+
+You can also build & run just the camera-location-test project with the 2 scripts [test build.sh](camera-location-test/build.sh) and [test run.sh](camera-location-test/run.sh).  Note that the test build depends upon the engine build having been completed already.
 
 ## Using the Interactive UI
 
