@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "transformer.h"
+#include <iostream>
 
 // Test
 TEST(TransformerTest, IsTrue) {
@@ -9,6 +10,7 @@ TEST(TransformerTest, IsTrue) {
 TEST(TransformerTest, EmptyRotationVectorCausesException) {
   Vision::Transformer transformer;
   cv::Mat vec;
-  auto ret = transformer.compute_rotation_matrix(vec);
-  EXPECT_EQ(ret , false);
+  auto [computed, error] = transformer.compute_rotation_matrix(vec);
+  std::cout << error << std::endl;
+  EXPECT_EQ(computed , false);
 }

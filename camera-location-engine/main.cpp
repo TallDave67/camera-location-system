@@ -24,14 +24,15 @@ int main(int argc, char** argv)
   std::string image_path {argv[1]};
 
   Vision::Agent agent;
-  if(agent.init(win_name, image_path) == 0)
+  if(agent.init(win_name, image_path))
   {
     //set the callback object and function for any mouse event
     CameraLocationEngine::pInput = &agent;
     cv::setMouseCallback(win_name, CameraLocationEngine::MouseCallback, NULL);
 
     agent.run();
+    return 0;
   }
 
-  return 0;
+  return -1;
 }

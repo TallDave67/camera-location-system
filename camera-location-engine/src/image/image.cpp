@@ -11,9 +11,9 @@ namespace Vision {
   {
   }
   
-  std::tuple<int,std::string> Image::init(const std::string & win_name_, const std::string & image_path)
+  std::tuple<bool,std::string> Image::init(const std::string & win_name_, const std::string & image_path)
   {
-    int ret = 0;
+    bool ret = true;
     std::string error;
 
     //store the window name
@@ -26,7 +26,7 @@ namespace Vision {
     image = cv::imread( image_path, 1 );
     if (image.empty())
     {
-        ret = -1;
+        ret = false;
         error = "Image is empty";
     }
     else
@@ -95,32 +95,43 @@ namespace Vision {
   
   std::tuple<bool,std::string> Image::find_board_squares()
   {
+    bool found {true};
+    std::string error;
+
+    square_corners.clear();
     cv::Size pattern_size(num_square_corners_horizontal, num_square_corners_vertical); //interior number of board_corners
     cv::Mat gray;
-    cv::cvtColor(image_shown,gray,cv::COLOR_BGR2GRAY);//source image
 
-    //this will be filled by the detected board_corners
-    //CALIB_CB_FAST_CHECK saves a lot of time on images that do not contain chessboard squares
-    square_corners.clear();
-    bool pattern_found = cv::findChessboardCorners(
-      gray, pattern_size, square_corners,
-      cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
-
-    std::string error;
-    if(pattern_found)
+    try
     {
-        cv::cornerSubPix(
-          gray, square_corners, cv::Size(11, 11), cv::Size(-1, -1),
-          cv::TermCriteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 30, 0.1));
-        cv::drawChessboardCorners(image_shown, pattern_size, cv::Mat(square_corners), pattern_found);
-        cv::imshow(win_name, image_shown);
+      cv::cvtColor(image_shown,gray,cv::COLOR_BGR2GRAY);//source image
+
+      //this will be filled by the detected board_corners
+      //CALIB_CB_FAST_CHECK saves a lot of time on images that do not contain chessboard squares
+      found = cv::findChessboardCorners(
+        gray, pattern_size, square_corners,
+        cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
+
+      if(found)
+      {
+          cv::cornerSubPix(
+            gray, square_corners, cv::Size(11, 11), cv::Size(-1, -1),
+            cv::TermCriteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 30, 0.1));
+          cv::drawChessboardCorners(image_shown, pattern_size, cv::Mat(square_corners), found);
+          cv::imshow(win_name, image_shown);
+      }
+      else
+      {
+          error = "no chessboard squares found, cannot determine camera position";
+      }
     }
-    else
+    catch (const cv::Exception& e)
     {
-        error = "no chessboard squares found, cannot determine camera position";
+      found = false;
+      error = e.what();
     }
 
-    return std::make_tuple(pattern_found, error);
+    return std::make_tuple(found, error);
   }
   
   void Image::create_object_points()

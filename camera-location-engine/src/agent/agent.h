@@ -16,8 +16,11 @@ namespace Vision {
       Agent();
       ~Agent();
 
-      int init(const std::string & win_name, const std::string & image_path);
+      bool init(const std::string & win_name, const std::string & image_path);
       void run();
+
+      std::tuple<bool,std::string> compute_transformation_vectors();
+      std::tuple<bool,std::string> verify_projected_points();
 
       cv::Mat & get_rotation_vector();
       cv::Mat & get_translation_vector();
@@ -29,8 +32,6 @@ namespace Vision {
       int clear();
       int exit();
 
-      void compute_transformation_vectors();
-      bool verify_projected_points();
       void report_camera_position_to_ui();
 
       void report_error(const std::string & error, unsigned int channel = ERROR_CHANNEL_CERR | ERROR_CHANNEL_COUT | ERROR_CHANNEL_UI);

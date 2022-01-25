@@ -10,21 +10,24 @@ namespace Vision {
   {
   }
 
-  bool Transformer::compute_rotation_matrix(cv::Mat & rot_vec)
+  std::tuple<bool,std::string> Transformer::compute_rotation_matrix(cv::Mat & rot_vec)
   {
-    bool ret = true;
+    bool computed = true;
+    std::string error;
+
     rot_mat = cv::Mat::zeros(3, 3, cv::DataType<double>::type);
     try
     {
       cv::Rodrigues(rot_vec, rot_mat);
     }
-    catch (const cv::Exception& e2)
+    catch (const cv::Exception& e)
     {
-      ret = false;
+      computed = false;
+      error = e.what();
     }
 
     std::cout << "rot_mat: " << rot_mat << std::endl;
-    return ret;
+    return std::make_tuple(computed, error);
   }
 
   cv::Mat & Transformer::get_rotation_matrix()

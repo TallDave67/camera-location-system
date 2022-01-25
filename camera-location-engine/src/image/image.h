@@ -14,7 +14,7 @@ namespace Vision {
       Image();
       ~Image();
 
-      std::tuple<int,std::string> init(const std::string & win_name_, const std::string & image_path);
+      std::tuple<bool,std::string> init(const std::string & win_name_, const std::string & image_path);
 
       void reset_image();
       void show_image();

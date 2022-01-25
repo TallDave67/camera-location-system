@@ -21,3 +21,17 @@ TEST(AgentTest, VerifyTranslationVector) {
   EXPECT_EQ(translation_vector.at<double>(0, 1) , 0.0);
   EXPECT_EQ(translation_vector.at<double>(0, 2) , 0.0);
 }
+
+TEST(AgentTest, EmptyDataToComputeTransformationVectorsCausesException) {
+  Vision::Agent agent;
+  auto [computed, error] = agent.compute_transformation_vectors();
+  std::cout << error << std::endl;
+  EXPECT_EQ(computed , false);
+}
+
+TEST(AgentTest, EmptyDataToVerifyProjectedPointsCausesException) {
+  Vision::Agent agent;
+  auto [verified, error] = agent.verify_projected_points();
+  std::cout << error << std::endl;
+  EXPECT_EQ(verified , false);
+}

@@ -8,6 +8,13 @@ TEST(ImageTest, IsTrue) {
 
 TEST(ImageTest, InitFailsWithoutImage) {
   Vision::Image image;
-  auto [ret, error] = image.init("test_window", "");
-  EXPECT_EQ(ret , -1);
+  auto [init, error] = image.init("test_window", "");
+  EXPECT_EQ(init , false);
+}
+
+TEST(ImageTest, EmptyDataToFindBoardSquaresCausesException) {
+  Vision::Image image;
+  auto [find, error] = image.find_board_squares();
+  std::cout << error << std::endl;
+  EXPECT_EQ(find , false);
 }
