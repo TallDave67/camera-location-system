@@ -1,5 +1,4 @@
 #include "agent.h"
-#include "agent_constants.h"
 #include "image_constants.h"
 #include "input_constants.h"
 
@@ -25,17 +24,15 @@ namespace Vision {
     add_key_event_handler(KEY_CLEAR, std::bind(&Agent::clear, this));
     add_key_event_handler(KEY_EXIT, std::bind(&Agent::exit, this));
 
-    std::string error;
-    if(image.init(win_name, image_path, error) == 0)
+    if(auto [ret, error] = image.init(win_name, image_path); ret == 0)
     {
       camera.init();
-      return 0;
+      return ret;
     }
     else
     {
-      std::cerr << error << std::endl;
-      std::cout << error_label << ": " << error << std::endl;
-      return -1;
+      report_error(error, ERROR_CHANNEL_CERR | ERROR_CHANNEL_COUT);
+      return ret;
     }
   }
   
@@ -73,14 +70,13 @@ namespace Vision {
     
   int Agent::determine_camera_location()
   {
-    std::string error;
     if(image.is_max_board_corners())
     {
-        std::cout << "***** Determine camera location using our 4 board_corners as a jumping off point:" << std::endl;
+        std::cout << "***** Determine camera position using our 4 board_corners as a jumping off point:" << std::endl;
         image.report_board_corners();
 
         image.mask_outside_board();
-        if(image.find_board_squares(error))
+        if(auto [found, error] = image.find_board_squares(); found)
         {
             std::cout << "found square corners" << std::endl;
             image.create_object_points();
@@ -149,13 +145,6 @@ namespace Vision {
     return verified;
   }
 
-  void Agent::report_error(std::string & error)
-  {
-    std::cerr << error << std::endl;
-    std::cout << error_label << ": " << error << std::endl;
-    report_error_to_ui(error);
-  }
-
   void Agent::report_camera_position_to_ui()
   {
     std::vector<std::stringstream> header {1};
@@ -170,7 +159,23 @@ namespace Vision {
     image.report_results_to_ui(header, body, Vision::Result::SUCCESS);
   }
 
-  void Agent::report_error_to_ui(std::string & error)
+  void Agent::report_error(const std::string & error, unsigned int channel)
+  {
+    if(channel & ERROR_CHANNEL_CERR)
+    {
+      std::cerr << error << std::endl;
+    }
+    if(channel & ERROR_CHANNEL_COUT)
+    {
+      std::cout << error_label << ": " << error << std::endl;
+    }
+    if(channel & ERROR_CHANNEL_UI)
+    {
+      report_error_to_ui(error);
+    }
+  }
+
+  void Agent::report_error_to_ui(const std::string & error)
   {
     std::vector<std::stringstream> header {1};
     header[0] << error_label;

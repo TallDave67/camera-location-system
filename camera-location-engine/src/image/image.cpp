@@ -11,23 +11,31 @@ namespace Vision {
   {
   }
   
-  int Image::init(const std::string & win_name_, const std::string & image_path, std::string & error)
+  std::tuple<int,std::string> Image::init(const std::string & win_name_, const std::string & image_path)
   {
+    int ret = 0;
+    std::string error;
+
+    //store the window name
     win_name = win_name_;
+
+    //read the image
     image = cv::imread( image_path, 1 );
-    if ( !image.data )
+    if (image.empty())
     {
-        error = "No image data";
-        return -1;
+        ret = -1;
+        error = "Image is empty";
+    }
+    else
+    {
+      cv::resize(image, image, cv::Size(image.cols/2, image.rows/2)); // to half size
+      cv::namedWindow(win_name, cv::WINDOW_AUTOSIZE );
+
+      //prepare our board_corners
+      memset(board_corners, 0, num_board_corners * sizeof(cv::Point));
     }
 
-    cv::resize(image, image, cv::Size(image.cols/2, image.rows/2)); // to half size
-    cv::namedWindow(win_name, cv::WINDOW_AUTOSIZE );
-
-    //prepare our board_corners
-    memset(board_corners, 0, num_board_corners * sizeof(cv::Point));
-
-    return 0;
+    return std::make_tuple(ret, error);
   }
   
   void Image::reset_image()
@@ -85,7 +93,7 @@ namespace Vision {
     cv::imshow(win_name, image_shown);
   }
   
-  bool Image::find_board_squares(std::string & error)
+  std::tuple<bool,std::string> Image::find_board_squares()
   {
     cv::Size pattern_size(num_square_corners_horizontal, num_square_corners_vertical); //interior number of board_corners
     cv::Mat gray;
@@ -98,6 +106,7 @@ namespace Vision {
       gray, pattern_size, square_corners,
       cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
 
+    std::string error;
     if(pattern_found)
     {
         cv::cornerSubPix(
@@ -111,7 +120,7 @@ namespace Vision {
         error = "no chessboard squares found, cannot determine camera position";
     }
 
-    return pattern_found;
+    return std::make_tuple(pattern_found, error);
   }
   
   void Image::create_object_points()

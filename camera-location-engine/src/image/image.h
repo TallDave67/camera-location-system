@@ -4,6 +4,7 @@
 #include "image_constants.h"
 #include <string>
 #include <sstream>
+#include <tuple>
 #include <opencv2/opencv.hpp>
 
 namespace Vision {
@@ -13,13 +14,13 @@ namespace Vision {
       Image();
       ~Image();
 
-      int init(const std::string & win_name_, const std::string & image_path, std::string & error);
+      std::tuple<int,std::string> init(const std::string & win_name_, const std::string & image_path);
 
       void reset_image();
       void show_image();
       void show_selected_board();
       void mask_outside_board();
-      bool find_board_squares(std::string & error);
+      std::tuple<bool,std::string> find_board_squares();
       void create_object_points();
       void report_results_to_ui(const std::vector<std::stringstream> & header, const std::vector<std::stringstream> & body, enum Vision::Result result);
 

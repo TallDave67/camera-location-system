@@ -1,6 +1,7 @@
 #ifndef _AGENT_H_
 #define _AGENT_H_
 
+#include "agent_constants.h"
 #include "input.h"
 #include "image.h"
 #include "camera.h"
@@ -29,8 +30,8 @@ namespace Vision {
       bool verify_projected_points();
       void report_camera_position_to_ui();
 
-      void report_error(std::string & error);
-      void report_error_to_ui(std::string & error);
+      void report_error(const std::string & error, unsigned int channel = ERROR_CHANNEL_CERR | ERROR_CHANNEL_COUT | ERROR_CHANNEL_UI);
+      void report_error_to_ui(const std::string & error);
 
     private:
       Vision::Image image;
