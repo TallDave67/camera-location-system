@@ -1,17 +1,9 @@
 ***** Determine camera position using our 4 board_corners as a jumping off point:
 board_corners
-  [550, 114]
-  [914, 89]
-  [966, 200]
-  [614, 230]
-ERROR: no chessboard squares found, cannot determine camera position
-Deselect all board_corners and clear camera position results
-***** Determine camera position using our 4 board_corners as a jumping off point:
-board_corners
-  [373, 322]
-  [832, 318]
-  [865, 525]
-  [348, 532]
+  [359, 315]
+  [837, 297]
+  [876, 528]
+  [346, 546]
 found square corners
 world origin (0,0) is chosen to be at image's first square corner (801.172,482.9)
 coordinate system is right-handed (x right, y down, z forward)
@@ -31,3 +23,11 @@ camera_front_world: [175.3547802577681;
 camera_world: [175.3547802577681;
  -1644.223444309944;
  -1333.801193760862]
+Deselect all board_corners and clear camera position results
+***** Determine camera position using our 4 board_corners as a jumping off point:
+board_corners
+  [406, 184]
+  [912, 300]
+  [306, 622]
+  [1011, 697]
+ERROR: no chessboard squares found, cannot determine camera position
