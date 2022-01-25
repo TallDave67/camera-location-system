@@ -1,13 +1,22 @@
 #!/bin/sh
-DIR="/build"
-if [ -d "$DIR" ]; then
-  ### Take action if $DIR exists ###
-  echo "${DIR} already exists"
+DIRECTORY="build"
+if [ -d "$DIRECTORY" ]
+then
+    echo "$DIRECTORY exists on your filesystem."
 else
-  ###  Control will jump here if $DIR does NOT exists ###
-  echo "Making directory${DIR}"
-  mkdir build
+  mkdir $DIRECTORY
 fi
-cd build
+cd $DIRECTORY
+DIRECTORY="lib"
+if [ -d "$DIRECTORY" ]
+then
+    echo "$DIRECTORY exists on your filesystem."
+else
+  mkdir $DIRECTORY
+fi
+
+cp "../../camera-location-engine/build/src/camera/libcamera_location_engine-src-camera.a" lib/.
 cmake ../
+truncate --size -1 ./CMakeFiles/camera_location_test.dir/link.txt
+echo -n "lib/libcamera_location_engine-src-camera.a " >> ./CMakeFiles/camera_location_test.dir/link.txt
 make VERBOSE=1

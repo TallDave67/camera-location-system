@@ -1,13 +1,11 @@
 #!/bin/sh 
-DIR="/build"
-if [ -d "$DIR" ]; then
-  ### Take action if $DIR exists ###
-  echo "${DIR} already exists"
+DIRECTORY="build"
+if [ -d "$DIRECTORY" ]
+then
+    echo "$DIRECTORY exists on your filesystem."
 else
-  ###  Control will jump here if $DIR does NOT exists ###
-  echo "Making directory${DIR}"
-  mkdir build
+  mkdir $DIRECTORY
 fi
-cd build
+cd $DIRECTORY
 cmake ../
 make VERBOSE=1

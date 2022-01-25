@@ -13,9 +13,7 @@ include_directories(
   ../camera-location-engine/src/transformer
 )
 
-link_directories(
-  ../camera-location-engine/build/src
-)
+set(CMAKE_PREFIX_PATH "${CMAKE_CURRENT_BUILD_DIR}/lib")
 
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
@@ -42,7 +40,6 @@ add_executable(camera_location_test
 )
 
 target_link_libraries(camera_location_test 
-  camera_location_engine-src
   ${OpenCV_LIBS}
   gtest_main
 )
