@@ -4,8 +4,8 @@
 
 namespace Vision {
   Agent::Agent() 
-    : rot_vec {3, 1, cv::DataType<double>::type}
-      ,trans_vec {3, 1, cv::DataType<double>::type}
+    : rot_vec {3, 1, cv::DataType<double>::type, 0.0}
+      ,trans_vec {3, 1, cv::DataType<double>::type, 0.0}
   {
   }
 
@@ -50,6 +50,16 @@ namespace Vision {
     }
   }
 
+  cv::Mat & Agent::get_rotation_vector()
+  {
+    return rot_vec;
+  }
+
+  cv::Mat & Agent::get_translation_vector()
+  {
+    return trans_vec;
+  }
+
   int Agent::add_next_board_corner(int x, int y, int flags, void* userdata)
   {
     if(image.is_max_board_corners())
@@ -59,13 +69,13 @@ namespace Vision {
         image.show_image();
     }
 
-    image.add_board_corner(x, y);
+    int num = image.add_board_corner(x, y);
     if(image.is_max_board_corners())
     {
         image.show_selected_board();
     }
     
-    return 0;
+    return num;
   }
     
   int Agent::determine_camera_location()
@@ -185,4 +195,5 @@ namespace Vision {
     //
     image.report_results_to_ui(header, body, Vision::Result::ERROR);
   }
+
 }

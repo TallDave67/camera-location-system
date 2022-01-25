@@ -19,6 +19,9 @@ namespace Vision {
       int init(const std::string & win_name, const std::string & image_path);
       void run();
 
+      cv::Mat & get_rotation_vector();
+      cv::Mat & get_translation_vector();
+
     private:
       //event handlers
       int add_next_board_corner(int x, int y, int flags, void* userdata);

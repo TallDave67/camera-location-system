@@ -19,6 +19,9 @@ namespace Vision {
     //store the window name
     win_name = win_name_;
 
+    //prepare our board_corners
+    memset(board_corners, 0, num_board_corners * sizeof(cv::Point));
+    
     //read the image
     image = cv::imread( image_path, 1 );
     if (image.empty())
@@ -30,9 +33,6 @@ namespace Vision {
     {
       cv::resize(image, image, cv::Size(image.cols/2, image.rows/2)); // to half size
       cv::namedWindow(win_name, cv::WINDOW_AUTOSIZE );
-
-      //prepare our board_corners
-      memset(board_corners, 0, num_board_corners * sizeof(cv::Point));
     }
 
     return std::make_tuple(ret, error);
@@ -181,14 +181,15 @@ namespace Vision {
     return (next_board_corner == num_board_corners);
   }
 
-  void Image::add_board_corner(int x, int y)
+  int Image::add_board_corner(int x, int y)
   {
     if(next_board_corner < num_board_corners)
     {
       board_corners[0][next_board_corner].x = x;
       board_corners[0][next_board_corner].y = y;
       next_board_corner++;
-    }    
+    }  
+    return next_board_corner;  
   }
 
   void Image::report_board_corners()

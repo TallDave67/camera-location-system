@@ -26,7 +26,7 @@ namespace Vision {
 
       void clear_board_corners();
       bool is_max_board_corners();
-      void add_board_corner(int x, int y);
+      int add_board_corner(int x, int y);
       void report_board_corners();
 
       std::vector<cv::Point2f> & get_square_corners();

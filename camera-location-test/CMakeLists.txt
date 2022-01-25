@@ -40,6 +40,6 @@ add_executable(camera_location_test
 )
 
 target_link_libraries(camera_location_test 
-  ${OpenCV_LIBS}
   gtest_main
+  ${OpenCV_LIBS}
 )
